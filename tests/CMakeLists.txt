@@ -7,16 +7,17 @@ FetchContent_MakeAvailable(googletest)
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-set(myproject_tests_SRCS
+set(MolecularDynamics_tests_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/test_hello_world.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/test_verlet.cpp
         )
 
 # Tests
-include_directories(myproject_tests ${CMAKE_SOURCE_DIR})
-add_executable(myproject_tests ${MYPROJECT_SRCS} ${MYPROJECT_HDRS} ${myproject_tests_SRCS})
-target_link_libraries(myproject_tests PUBLIC Eigen3::Eigen gtest gtest_main)
+include_directories(MolecularDynamics_tests ${CMAKE_SOURCE_DIR})
+add_executable(MolecularDynamics_tests ${MolecularDynamics_SRCS} ${MolecularDynamics_HDRS} ${MolecularDynamics_tests_SRCS})
+target_link_libraries(MolecularDynamics_tests PUBLIC Eigen3::Eigen gtest gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(myproject_tests)
+gtest_discover_tests(MolecularDynamics_tests)
 
-add_test(NAME myproject_tests COMMAND myproject_tests)
+add_test(NAME MolecularDynamics_tests COMMAND MolecularDynamics_tests)
