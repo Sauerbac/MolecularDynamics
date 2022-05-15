@@ -12,6 +12,7 @@ add_external_package(Eigen3 VERSION 3.4.0 CONFIG)
 set(MolecularDynamics_HDRS
         # Add header files here
         ${CMAKE_CURRENT_SOURCE_DIR}/Atoms.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Types.h
         )
 
 set(MolecularDynamics_SRCS

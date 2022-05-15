@@ -1,6 +1,6 @@
 #include "Atoms.h"
 
-Atoms::Atoms(const Eigen::Array3Xd &p, const Eigen::ArrayXd &m)
+Atoms::Atoms(const mat &p, const vec &m)
     : positions{p},
       velocities{3, p.cols()},
       forces{3, p.cols()},
@@ -9,8 +9,7 @@ Atoms::Atoms(const Eigen::Array3Xd &p, const Eigen::ArrayXd &m)
     forces.setZero();
 }
 
-Atoms::Atoms(const Eigen::Array3Xd &p, const Eigen::Array3Xd &v,
-             const Eigen::ArrayXd &m)
+Atoms::Atoms(const mat &p, const mat &v, const vec &m)
     : positions{p},
       velocities{v},
       forces{3, p.cols()},

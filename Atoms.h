@@ -1,18 +1,18 @@
 #ifndef __ATOMS_H
 #define __ATOMS_H
 
+#include "Types.h"
 #include <Eigen/Dense>
 
 class Atoms {
   public:
-    Eigen::Array3Xd positions;
-    Eigen::Array3Xd velocities;
-    Eigen::Array3Xd forces;
-    Eigen::ArrayXd masses;
+    mat positions;
+    mat velocities;
+    mat forces;
+    vec masses;
 
-    Atoms(const Eigen::Array3Xd &p, const Eigen::ArrayXd &m);
-    Atoms(const Eigen::Array3Xd &p, const Eigen::Array3Xd &v,
-          const Eigen::ArrayXd &m);
+    Atoms(const mat &p, const vec &m);
+    Atoms(const mat &p, const mat &v, const vec &m);
 
     size_t nb_atoms() const;
 
