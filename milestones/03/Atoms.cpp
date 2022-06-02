@@ -18,6 +18,16 @@ Atoms::Atoms(const mat &p, const mat &v, const vec &m)
     forces.setZero();
 }
 
+Atoms::Atoms(int nb_atoms)
+    : positions{3, nb_atoms},
+      velocities{3, nb_atoms},
+      forces{3, nb_atoms},
+      masses{nb_atoms} {
+    positions.setZero();
+    velocities.setZero();
+    forces.setZero();
+}
+
 size_t Atoms::nb_atoms() const {
     return positions.cols();
 }

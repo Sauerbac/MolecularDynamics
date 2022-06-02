@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
+#include "ForcesEnergies.h"
+#include "Types.h"
 #include <gtest/gtest.h>
-
-#include "lj_direct_summation.h"
 
 TEST(LJDirectSummationTest, Forces) {
     constexpr int nb_atoms = 10;
@@ -38,20 +38,20 @@ TEST(LJDirectSummationTest, Forces) {
     atoms.positions.setRandom(); // random numbers between -1 and 1
 
     // compute and store energy of the indisturbed configuration
-    double e0{lj_direct_summation(atoms, epsilon, sigma)};
-    Forces_t forces0{atoms.forces};
+    double e0 = lj_direct_summation(atoms, epsilon, sigma);
+    mat forces0 = atoms.forces;
 
     // loop over all atoms and compute forces from a finite differences
     // approximation
-    for (int i{0}; i < nb_atoms; ++i) {
+    for (int i = 0; i < nb_atoms; ++i) {
         // loop over all Cartesian directions
-        for (int j{0}; j < 3; ++j) {
+        for (int j = 0; j < 3; ++j) {
             // move atom to the right
             atoms.positions(j, i) += delta;
-            double eplus{lj_direct_summation(atoms, epsilon, sigma)};
+            double eplus = lj_direct_summation(atoms, epsilon, sigma);
             // move atom to the left
             atoms.positions(j, i) -= 2 * delta;
-            double eminus{lj_direct_summation(atoms, epsilon, sigma)};
+            double eminus = lj_direct_summation(atoms, epsilon, sigma);
             // move atom back to original position
             atoms.positions(j, i) += delta;
 

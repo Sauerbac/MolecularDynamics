@@ -1,8 +1,9 @@
 set(milestone04_HDRS # Add header files here
-    ${CMAKE_CURRENT_SOURCE_DIR}/ForcesEnergies.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/ForcesEnergies.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/xyz.h)
 
 set(milestone04_SRCS # Add source files here
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/xyz.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ForcesEnergies.cpp)
 
 include_directories(../03)
