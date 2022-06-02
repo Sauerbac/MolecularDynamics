@@ -6,4 +6,6 @@
 double lj_direct_summation(Atoms &atoms, double epsilon = 1.0,
                            double sigma = 1.0);
 
+double kinetic_energy(Atoms &atoms, double epsilon = 1.0, double sigma = 1.0);
+
 #endif // __FORCESENERGIES_H

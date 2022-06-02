@@ -35,3 +35,13 @@ double lj_direct_summation(Atoms &atoms, double epsilon, double sigma) {
     }
     return 0.5 * pot_energy;
 }
+
+double kinetic_energy(Atoms &atoms, double epsilon, double sigma) {
+    double kinetic_energy = 0.0;
+    for (int i = 1; i < atoms.nb_atoms(); i++) {
+        kinetic_energy += 0.5 *
+                          pow(atoms.velocities.col(i).matrix().norm(), 2) *
+                          atoms.masses(i);
+    }
+    return kinetic_energy;
+}
