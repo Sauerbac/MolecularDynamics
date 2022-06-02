@@ -1,21 +1,24 @@
 include(FetchContent)
 FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/eaf9a3fd77869cf95befb87455a2e2a2e85044ff.zip
+  googletest
+  URL https://github.com/google/googletest/archive/eaf9a3fd77869cf95befb87455a2e2a2e85044ff.zip
 )
 FetchContent_MakeAvailable(googletest)
 # For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(gtest_force_shared_crt
+    ON
+    CACHE BOOL "" FORCE)
 
 set(MolecularDynamics_tests_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/test_hello_world.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/test_verlet.cpp
-        )
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_hello_world.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_verlet.cpp)
 
 # Tests
-include_directories(MolecularDynamics_tests ${CMAKE_SOURCE_DIR})
-add_executable(MolecularDynamics_tests ${MolecularDynamics_SRCS} ${MolecularDynamics_HDRS} ${MolecularDynamics_tests_SRCS})
-target_link_libraries(MolecularDynamics_tests PUBLIC Eigen3::Eigen gtest gtest_main)
+include_directories(${CMAKE_SOURCE_DIR}/milestones/03)
+add_executable(MolecularDynamics_tests ${MolecularDynamics_tests_SRCS})
+
+target_link_libraries(MolecularDynamics_tests PUBLIC Eigen3::Eigen gtest
+                                                     gtest_main milestone03)
 
 include(GoogleTest)
 gtest_discover_tests(MolecularDynamics_tests)
