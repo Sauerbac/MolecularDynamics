@@ -31,14 +31,3 @@ Atoms::Atoms(int nb_atoms)
 size_t Atoms::nb_atoms() const {
     return positions.cols();
 }
-
-void Atoms::verlet1(Atoms &atoms, double timestep) {
-    // TODO: check if multiplication is correct
-    atoms.velocities += 0.5 * atoms.forces * timestep / atoms.masses;
-    atoms.positions += atoms.velocities * timestep;
-}
-
-void Atoms::verlet2(Atoms &atoms, double timestep) {
-    // TODO: check if multiplication is correct
-    atoms.velocities += 0.5 * atoms.velocities * timestep / atoms.masses;
-}

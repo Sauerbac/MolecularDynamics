@@ -28,6 +28,7 @@
 #include <fstream>
 
 #include "Atoms.h"
+#include <Eigen/Dense>
 
 /*
  * Type vec, if not defined use
@@ -52,7 +53,9 @@ std::tuple<vec, mat> read_xyz(const std::string &filename);
  *         where Name is some name for the atom, X Y Z the position
  *         and VX, VY, VZ the velocity of the atom
  */
-std::tuple<vec, mat, mat> read_xyz_with_velocities(const std::string &filename);
+std::tuple<mat, mat> read_xyz_with_velocities(const std::string &filename);
+
+Atoms read_atoms(const std::string &path);
 
 /*
  * Write positions and velocities to an XYZ file.

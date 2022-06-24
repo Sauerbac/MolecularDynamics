@@ -45,7 +45,7 @@ std::tuple<vec, mat> read_xyz(const std::string &filename) {
 
         // Data structures for names and positions
         vec names(nb_atoms);
-        Eigen::Array3Xd positions(3, nb_atoms);
+        mat positions(3, nb_atoms);
         positions.setZero();
 
         // Now follows a line for each atom
@@ -64,8 +64,7 @@ std::tuple<vec, mat> read_xyz(const std::string &filename) {
     }
 }
 
-std::tuple<vec, mat, mat>
-read_xyz_with_velocities(const std::string &filename) {
+std::tuple<mat, mat> read_xyz_with_velocities(const std::string &filename) {
     std::ifstream file(filename);
 
     if (file.is_open()) {
@@ -81,16 +80,17 @@ read_xyz_with_velocities(const std::string &filename) {
         std::getline(file, line);
 
         // Data structures for names and positions
-        vec names(nb_atoms);
-        Eigen::Array3Xd positions(3, nb_atoms);
-        Eigen::Array3Xd velocities(3, nb_atoms);
+        Eigen::Vector<std::string, Eigen::Dynamic> names(nb_atoms);
+        mat positions(3, nb_atoms);
+        mat velocities(3, nb_atoms);
         positions.setZero();
         velocities.setZero();
 
         // Now follows a line for each atom
         for (int i = 0; i < nb_atoms; ++i) {
             std::getline(file, line);
-            std::istringstream(line) >> names[i] >> positions(0, i) >>
+
+            std::istringstream(line) >> names(i) >> positions(0, i) >>
                 positions(1, i) >> positions(2, i) >> velocities(0, i) >>
                 velocities(1, i) >> velocities(2, i);
         }
@@ -98,10 +98,20 @@ read_xyz_with_velocities(const std::string &filename) {
         // Close file, we're done
         file.close();
 
-        return {names, positions, velocities};
+        return {positions, velocities};
     } else {
         throw std::runtime_error("Could not open file");
     }
+}
+
+Atoms read_atoms(const std::string &path) {
+    auto [positions, velocities] = read_xyz_with_velocities(path);
+
+    // TODO: convert names to masses
+    vec masses(positions.cols());
+    masses.setConstant(1.0);
+    Atoms system_from_file = Atoms(positions, velocities, masses);
+    return system_from_file;
 }
 
 void write_xyz(std::ofstream &file, Atoms &atoms) {

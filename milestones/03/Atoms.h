@@ -16,9 +16,6 @@ class Atoms {
     Atoms(int nb_atoms);
 
     size_t nb_atoms() const;
-
-    void verlet1(Atoms &atoms, double timestep);
-    void verlet2(Atoms &atoms, double timestep);
 };
 
 #endif // __ATOMS_H
