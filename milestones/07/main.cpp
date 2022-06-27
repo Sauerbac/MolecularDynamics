@@ -1,10 +1,12 @@
 #include "Atoms.h"
-#include "ForcesEnergies.h"
+#include "ForcesEnergiesCutoff.h"
 #include "LatticeGen.h"
 #include "berendsen.h"
+#include "neighbors.h"
 #include "verlet.h"
 #include "xyz.h"
 #include <Eigen/Dense>
+#include <gupta.h>
 #include <iostream>
 
 int main() {
@@ -24,10 +26,14 @@ int main() {
     double goal_temp = 1000.0;
     double relaxation_time = 1.0;
 
+    NeighborList neighbor_list(2.0);
+
     for (int i = 0; i < 1000; i++) {
         write_xyz(file, system);
+
+        neighbor_list.update(system);
         verlet1(system, timestep);
-        lj_direct_summation(system, 1.0, 1.0);
+        lj_neighbors(system, neighbor_list, 1.0, 1.0);
         verlet2(system, timestep);
         berendsen_thermostat(system, goal_temp, timestep, relaxation_time);
         std::cout << temperature(system) << std::endl;

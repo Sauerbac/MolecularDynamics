@@ -13,12 +13,14 @@ set(MolecularDynamics_tests_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/test_hello_world.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_neighbors.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_lj_direct_summation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_gupta.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_verlet.cpp)
 
 # Tests
 include_directories(
   ${CMAKE_SOURCE_DIR}/milestones/03 ${CMAKE_SOURCE_DIR}/milestones/04
-  ${CMAKE_SOURCE_DIR}/milestones/05 ${CMAKE_SOURCE_DIR}/milestones/06)
+  ${CMAKE_SOURCE_DIR}/milestones/05 ${CMAKE_SOURCE_DIR}/milestones/06
+  ${CMAKE_SOURCE_DIR}/milestones/07)
 add_executable(MolecularDynamics_tests ${MolecularDynamics_tests_SRCS})
 
 target_link_libraries(

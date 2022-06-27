@@ -1,9 +1,6 @@
 #include "ForcesEnergies.h"
-#include "constants.h"
-#include <Eigen/Dense>
 
 void lj_direct_summation(Atoms &atoms, double epsilon, double sigma) {
-    double pot_energy = 0;
     for (int i = 0; i < atoms.nb_atoms(); i++) {
         Eigen::Vector3d force_sum = Eigen::Vector3d::Zero();
         for (int j = 0; j < atoms.nb_atoms(); j++) {

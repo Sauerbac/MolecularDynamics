@@ -36,6 +36,10 @@ class NeighborList {
         return seed_(seed_.size() - 1);
     }
 
+    double get_interaction_range() {
+        return interaction_range_;
+    }
+
     /*
      * Return the number of neighbors of atom `i` found by the last call to
      * `update`

@@ -1,19 +1,15 @@
-#ifndef __FORCESENERGIES_H
-#define __FORCESENERGIES_H
+#ifndef __FORCESENERGIES_NEIGHBORS_H
+#define __FORCESENERGIES_NEIGHBORS_H
 
 #include "Atoms.h"
 #include "constants.h"
+#include "neighbors.h"
 #include <Eigen/Dense>
 
-void lj_direct_summation(Atoms &atoms, double epsilon = 1.0,
-                         double sigma = 1.0);
+void lj_neighbors(Atoms &atoms, NeighborList &neighbor_list,
+                  double epsilon = 1.0, double sigma = 1.0);
 
-double lj_direct_summation_test(Atoms &atoms, double epsilon = 1.0,
-                                double sigma = 1.0);
+double potential_energy_cutoff(Atoms &atoms, NeighborList &neighbor_list,
+                               double epsilon, double sigma);
 
-double kinetic_energy(Atoms &atoms);
-double potential_energy(Atoms &atoms, double sigma, double epsilon);
-double total_energy(Atoms &atoms, double sigma, double epsilon);
-double temperature(Atoms &atoms);
-
-#endif // __FORCESENERGIES_H
+#endif // __FORCESENERGIES_NEIGHBORS_H
