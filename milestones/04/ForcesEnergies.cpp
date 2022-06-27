@@ -1,8 +1,6 @@
 #include "ForcesEnergies.h"
+#include "constants.h"
 #include <Eigen/Dense>
-#include <math.h>
-
-const double BOLTZMANN = 8.617333262e-5;
 
 void lj_direct_summation(Atoms &atoms, double epsilon, double sigma) {
     double pot_energy = 0;
@@ -42,10 +40,9 @@ double kinetic_energy(Atoms &atoms) {
     return kinetic_energy;
 }
 
-double potential_energy(Atoms &atoms, double sigma, double epsilon) {
+double potential_energy(Atoms &atoms, double epsilon, double sigma) {
     double pot_energy = 0;
     for (int i = 0; i < atoms.nb_atoms(); i++) {
-        Eigen::Vector3d force_sum = Eigen::Vector3d::Zero();
         for (int j = 0; j < atoms.nb_atoms(); j++) {
             if (i != j) {
                 double distance =

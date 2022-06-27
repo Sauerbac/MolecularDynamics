@@ -1,6 +1,7 @@
 set(milestone03_HDRS # Add header files here
     ${CMAKE_CURRENT_SOURCE_DIR}/Atoms.h ${CMAKE_CURRENT_SOURCE_DIR}/Types.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/verlet.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/verlet.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/constants.h)
 
 set(milestone03_SRCS # Add source files here
     ${CMAKE_CURRENT_SOURCE_DIR}/Atoms.cpp ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp

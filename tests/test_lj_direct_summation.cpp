@@ -38,7 +38,8 @@ TEST(LJDirectSummationTest, Forces) {
     atoms.positions.setRandom(); // random numbers between -1 and 1
 
     // compute and store energy of the indisturbed configuration
-    double e0 = lj_direct_summation(atoms, epsilon, sigma);
+    double e0 = potential_energy(atoms, epsilon, sigma);
+    lj_direct_summation(atoms, epsilon, sigma);
     mat forces0 = atoms.forces;
 
     // loop over all atoms and compute forces from a finite differences
@@ -48,10 +49,10 @@ TEST(LJDirectSummationTest, Forces) {
         for (int j = 0; j < 3; ++j) {
             // move atom to the right
             atoms.positions(j, i) += delta;
-            double eplus = lj_direct_summation(atoms, epsilon, sigma);
+            double eplus = potential_energy(atoms, epsilon, sigma);
             // move atom to the left
             atoms.positions(j, i) -= 2 * delta;
-            double eminus = lj_direct_summation(atoms, epsilon, sigma);
+            double eminus = potential_energy(atoms, epsilon, sigma);
             // move atom back to original position
             atoms.positions(j, i) += delta;
 

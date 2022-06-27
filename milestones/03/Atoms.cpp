@@ -1,4 +1,6 @@
 #include "Atoms.h"
+#include "constants.h"
+#include <iostream>
 
 Atoms::Atoms(const mat &p, const vec &m)
     : positions{p},
@@ -28,6 +30,27 @@ Atoms::Atoms(int nb_atoms)
     forces.setZero();
 }
 
+Atoms::Atoms(mat &p, str_vec &n) {
+
+    positions = p;
+    velocities = mat::Zero(3, p.cols());
+    forces = mat::Zero(3, p.cols());
+    masses = name2masses(n);
+}
+
 size_t Atoms::nb_atoms() const {
     return positions.cols();
+}
+
+vec name2masses(str_vec &names) {
+    int len = names.rows();
+
+    vec masses{len};
+    for (int i = 0; i < len; i++) {
+        std::string atom_name = names[i];
+        double mass = ATOMIC_MASSES.at(atom_name);
+
+        masses.row(i) = mass;
+    }
+    return masses;
 }
