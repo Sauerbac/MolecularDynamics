@@ -15,6 +15,7 @@ class Atoms {
     Atoms(const mat &p, const mat &v, const vec &m);
     Atoms(int nb_atoms);
     Atoms(mat &p, str_vec &n);
+    Atoms(mat &p, const mat &v, str_vec &n);
 
     size_t nb_atoms() const;
 };

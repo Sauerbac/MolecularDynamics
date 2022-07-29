@@ -31,9 +31,15 @@ Atoms::Atoms(int nb_atoms)
 }
 
 Atoms::Atoms(mat &p, str_vec &n) {
-
     positions = p;
     velocities = mat::Zero(3, p.cols());
+    forces = mat::Zero(3, p.cols());
+    masses = name2masses(n);
+}
+
+Atoms::Atoms(mat &p, const mat &v, str_vec &n) {
+    positions = p;
+    velocities = v;
     forces = mat::Zero(3, p.cols());
     masses = name2masses(n);
 }
@@ -50,7 +56,7 @@ vec name2masses(str_vec &names) {
         std::string atom_name = names[i];
         double mass = ATOMIC_MASSES.at(atom_name);
 
-        masses.row(i) = mass;
+        masses.row(i) = mass * MASSFACTOR;
     }
     return masses;
 }

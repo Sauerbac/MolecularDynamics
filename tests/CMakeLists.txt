@@ -31,7 +31,8 @@ target_link_libraries(
          milestone03
          milestone04
          milestone05
-         milestone06)
+         milestone06
+         milestone07)
 
 include(GoogleTest)
 gtest_discover_tests(MolecularDynamics_tests)

@@ -11,9 +11,9 @@ int main() {
     std::cout << "Hello milestone 05!" << std::endl;
 
     std::string path = "/home/sauerbach/HPC/MolecularDynamics/static/lj54.xyz";
-    // Atoms system = read_atoms(path);
-    Atoms system = cubic(1000, 1.0, 1.008, 0.01);
-    std::cout << system.nb_atoms() << std::endl;
+    Atoms system = read_atoms(path);
+    // Atoms system = cubic(1000, 1.0, 1.008, 0.01);
+    // std::cout << system.nb_atoms() << std::endl;
 
     std::string output = "/home/sauerbach/HPC/MolecularDynamics/static/out.xyz";
     std::ofstream file(output);

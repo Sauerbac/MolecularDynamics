@@ -3,7 +3,11 @@
 
 #include <map>
 
-const double BOLTZMANN = 8.617333262e-5;
+const double BOLTZMANN = 8.617333262e-5; // eV/K
+// const double BOLTZMANN = 1.38e-23; // J/K
+const double ANGSTROM = 1e-10;    // m
+const double FEMTOSECOND = 1e-15; // s
+const double MASSFACTOR = 103.6;  // kg*mol/g
 // https://github.com/lumol-org/lumol/blob/813ee362428bd19e2797d917d2f32206a83f65d6/lumol-core/src/sys/config/mass.rs
 const std::map<std::string, double> ATOMIC_MASSES = {
     {"H", 1.008},        {"He", 4.002602},    {"Li", 6.94},

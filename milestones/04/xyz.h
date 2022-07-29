@@ -42,7 +42,7 @@
  *     following lines: Name X Y Z
  *         where Name is some name for the atom and X Y Z the position
  */
-std::tuple<vec, mat> read_xyz(const std::string &filename);
+std::tuple<str_vec, mat> read_xyz(const std::string &filename);
 
 /*
  * Read positions and velocities from an XYZ file.
@@ -53,9 +53,11 @@ std::tuple<vec, mat> read_xyz(const std::string &filename);
  *         where Name is some name for the atom, X Y Z the position
  *         and VX, VY, VZ the velocity of the atom
  */
-std::tuple<mat, mat> read_xyz_with_velocities(const std::string &filename);
+std::tuple<str_vec, mat, mat>
+read_xyz_with_velocities(const std::string &filename);
 
 Atoms read_atoms(const std::string &path);
+Atoms read_atoms_no_velocities(const std::string &path);
 
 /*
  * Write positions and velocities to an XYZ file.

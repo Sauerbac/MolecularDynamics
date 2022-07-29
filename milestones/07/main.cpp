@@ -2,41 +2,68 @@
 #include "ForcesEnergiesCutoff.h"
 #include "LatticeGen.h"
 #include "berendsen.h"
+#include "gupta.h"
+#include "metrics.h"
 #include "neighbors.h"
 #include "verlet.h"
 #include "xyz.h"
 #include <Eigen/Dense>
-#include <gupta.h>
 #include <iostream>
 
 int main() {
-    std::cout << "Hello milestone 05!" << std::endl;
+    std::cout << "Hello milestone 07!" << std::endl;
 
-    std::string path = "/home/sauerbach/HPC/MolecularDynamics/static/lj54.xyz";
-    // Atoms system = read_atoms(path);
-    Atoms system = cubic(1000, 1.0, 1.008, 0.01);
+    std::string path =
+        "/home/sauerbach/HPC/MolecularDynamics/static/cluster_923.xyz";
+    Atoms system = read_atoms_no_velocities(path);
+    // Atoms system = cubic(300, 3.0, 196.966569, 0.01);
     std::cout << system.nb_atoms() << std::endl;
 
-    std::string output = "/home/sauerbach/HPC/MolecularDynamics/static/out.xyz";
-    std::ofstream file(output);
+    std::string xyz_out =
+        "/home/sauerbach/HPC/MolecularDynamics/static/out.xyz";
+    std::ofstream file(xyz_out);
 
-    double timestep = 0.01;
-    double epsilon = 1.0;
-    double sigma = 1.0;
-    double goal_temp = 1000.0;
-    double relaxation_time = 1.0;
+    std::string metrics =
+        "/home/sauerbach/HPC/MolecularDynamics/static/metrics.csv";
+    std::ofstream metrics_file(metrics);
 
-    NeighborList neighbor_list(2.0);
+    NeighborList neighbor_list(7.0);
 
-    for (int i = 0; i < 1000; i++) {
-        write_xyz(file, system);
+    double timestep = 10;
+    double goal_temp = 500;
+    double relaxation_time = 10000;
 
-        neighbor_list.update(system);
-        verlet1(system, timestep);
-        lj_neighbors(system, neighbor_list, 1.0, 1.0);
-        verlet2(system, timestep);
-        berendsen_thermostat(system, goal_temp, timestep, relaxation_time);
-        std::cout << temperature(system) << std::endl;
+    int num_steps = relaxation_time / timestep;
+
+    for (int j = 0; j < 50; j++) {
+        for (int i = 0; i < num_steps; i++) {
+            if (i % 10 == 0) {
+                write_xyz(file, system);
+            }
+
+            neighbor_list.update(system);
+            verlet1(system, timestep);
+            double pot = gupta(system, neighbor_list);
+            verlet2(system, timestep);
+            berendsen_thermostat(system, goal_temp, timestep, relaxation_time);
+            // std::cout << temperature(system) << std::endl;
+            write_metrics(metrics_file, system, pot);
+        }
+        goal_temp = goal_temp + 10;
+        for (int i = 0; i < num_steps * 2; i++) {
+            if (i % 10 == 0) {
+                write_xyz(file, system);
+            }
+
+            neighbor_list.update(system);
+            verlet1(system, timestep);
+            double pot = gupta(system, neighbor_list);
+            verlet2(system, timestep);
+            // std::cout << temperature(system) << std::endl;
+            write_metrics(metrics_file, system, pot);
+        }
+        std::cout << j << std::endl;
+        std::cout << goal_temp << ' ' << temperature(system) << std::endl;
     }
 
     file.close();

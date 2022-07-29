@@ -28,7 +28,7 @@
 
 #include "xyz.h"
 
-std::tuple<vec, mat> read_xyz(const std::string &filename) {
+std::tuple<str_vec, mat> read_xyz(const std::string &filename) {
     std::ifstream file(filename);
 
     if (file.is_open()) {
@@ -44,7 +44,7 @@ std::tuple<vec, mat> read_xyz(const std::string &filename) {
         std::getline(file, line);
 
         // Data structures for names and positions
-        vec names(nb_atoms);
+        str_vec names(nb_atoms);
         mat positions(3, nb_atoms);
         positions.setZero();
 
@@ -64,7 +64,8 @@ std::tuple<vec, mat> read_xyz(const std::string &filename) {
     }
 }
 
-std::tuple<mat, mat> read_xyz_with_velocities(const std::string &filename) {
+std::tuple<str_vec, mat, mat>
+read_xyz_with_velocities(const std::string &filename) {
     std::ifstream file(filename);
 
     if (file.is_open()) {
@@ -98,19 +99,24 @@ std::tuple<mat, mat> read_xyz_with_velocities(const std::string &filename) {
         // Close file, we're done
         file.close();
 
-        return {positions, velocities};
+        return {names, positions, velocities};
     } else {
         throw std::runtime_error("Could not open file");
     }
 }
 
 Atoms read_atoms(const std::string &path) {
-    auto [positions, velocities] = read_xyz_with_velocities(path);
+    auto [names, positions, velocities] = read_xyz_with_velocities(path);
 
-    // TODO: convert names to masses
-    vec masses(positions.cols());
-    masses.setConstant(1.0);
+    vec masses = name2masses(names);
     Atoms system_from_file = Atoms(positions, velocities, masses);
+    return system_from_file;
+}
+
+Atoms read_atoms_no_velocities(const std::string &path) {
+    auto [names, positions] = read_xyz(path);
+
+    Atoms system_from_file = Atoms(positions, names);
     return system_from_file;
 }
 
