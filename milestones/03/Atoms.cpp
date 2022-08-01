@@ -58,9 +58,15 @@ void Atoms::resize(int len) {
 }
 
 void Atoms::assert_equal_length() const {
-    bool same_size =
-        positions.cols() == velocities.cols() == forces.cols() == masses.rows();
-    if (same_size) {
+    bool same_size = positions.cols() == velocities.cols() &&
+                     velocities.cols() == forces.cols() &&
+                     forces.cols() == masses.rows();
+    if (!same_size) {
+        std::cout << "positions:" << positions.cols() << std::endl;
+        std::cout << "velocities:" << velocities.cols() << std::endl;
+        std::cout << "forces:" << forces.cols() << std::endl;
+        std::cout << "masses:" << masses.rows() << std::endl;
+        std::cout << "1 is true, 0 is false:" << same_size << std::endl;
         throw std::runtime_error("Not same length in all arrays!");
     }
 }
