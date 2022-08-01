@@ -18,8 +18,12 @@ class Atoms {
     Atoms(mat &p, const mat &v, str_vec &n);
 
     size_t nb_atoms() const;
+    void resize(int len);
+    void assert_equal_length() const;
 };
 
 vec name2masses(str_vec &names);
+void removeRow(Eigen::MatrixXd &matrix, unsigned int rowToRemove);
+void removeColumn(Eigen::MatrixXd &matrix, unsigned int colToRemove);
 
 #endif // __ATOMS_H

@@ -45,7 +45,24 @@ Atoms::Atoms(mat &p, const mat &v, str_vec &n) {
 }
 
 size_t Atoms::nb_atoms() const {
+    assert_equal_length();
     return positions.cols();
+}
+
+void Atoms::resize(int len) {
+    assert_equal_length();
+    positions.conservativeResize(Eigen::NoChange_t::NoChange, len);
+    velocities.conservativeResize(Eigen::NoChange_t::NoChange, len);
+    forces.conservativeResize(Eigen::NoChange_t::NoChange, len);
+    masses.conservativeResize(len, Eigen::NoChange_t::NoChange);
+}
+
+void Atoms::assert_equal_length() const {
+    bool same_size =
+        positions.cols() == velocities.cols() == forces.cols() == masses.rows();
+    if (same_size) {
+        throw std::runtime_error("Not same length in all arrays!");
+    }
 }
 
 vec name2masses(str_vec &names) {
