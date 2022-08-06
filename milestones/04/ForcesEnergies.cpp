@@ -1,4 +1,5 @@
 #include "ForcesEnergies.h"
+#include <iostream>
 
 void lj_direct_summation(Atoms &atoms, double epsilon, double sigma) {
     for (int i = 0; i < atoms.nb_atoms(); i++) {
@@ -30,6 +31,10 @@ void lj_direct_summation(Atoms &atoms, double epsilon, double sigma) {
 double kinetic_energy(Atoms &atoms) {
     double kinetic_energy = 0.0;
     for (int i = 1; i < atoms.nb_atoms(); i++) {
+
+        // std::cout << " " << atoms.velocities.col(i).matrix().norm() << " "
+        //           << atoms.velocities.col(i).matrix() << std::endl;
+        // // std::cout << atoms.velocities << std::endl;
         kinetic_energy += 0.5 *
                           pow(atoms.velocities.col(i).matrix().norm(), 2) *
                           atoms.masses(i);

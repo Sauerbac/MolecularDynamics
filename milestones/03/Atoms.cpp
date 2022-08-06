@@ -51,9 +51,15 @@ size_t Atoms::nb_atoms() const {
 
 void Atoms::resize(int len) {
     assert_equal_length();
-    positions.conservativeResize(Eigen::NoChange_t::NoChange, len);
-    velocities.conservativeResize(Eigen::NoChange_t::NoChange, len);
-    forces.conservativeResize(Eigen::NoChange_t::NoChange, len);
+    // std::cout << "before: " << std::endl;
+    // std::cout << positions.rows() << " " << positions.cols() << std::endl;
+    // std::cout << positions << std::endl;
+    positions.conservativeResizeLike(Eigen::MatrixXd::Zero(3, len));
+    // std::cout << "after: " << std::endl;
+    // std::cout << positions << std::endl;
+    // std::cout << positions.rows() << " " << positions.cols() << std::endl;
+    velocities.conservativeResizeLike(Eigen::MatrixXd::Zero(3, len));
+    forces.conservativeResizeLike(Eigen::MatrixXd::Zero(3, len));
     masses.conservativeResize(len, Eigen::NoChange_t::NoChange);
 }
 
