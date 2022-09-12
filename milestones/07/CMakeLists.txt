@@ -1,9 +1,8 @@
 set(milestone07_HDRS # Add header files here
-    ${CMAKE_CURRENT_SOURCE_DIR}/gupta.h ${CMAKE_CURRENT_SOURCE_DIR}/metrics.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/gupta.h)
 
 set(milestone07_SRCS # Add source files here
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/gupta.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/metrics.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/gupta.cpp)
 
 include_directories(../03 ../04 ../05 ../06)
 

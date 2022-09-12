@@ -4,8 +4,7 @@
 #include "Types.h"
 #include <Eigen/Dense>
 
-class Atoms {
-  public:
+struct Atoms {
     mat positions;
     mat velocities;
     mat forces;

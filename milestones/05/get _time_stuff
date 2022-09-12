@@ -1,0 +1,8 @@
+for VARIABLE in {1..15}
+do
+num_atoms=$(( 10*VARIABLE))
+echo "$num_atoms"
+for counter in {1..5}
+ do /home/sauerbach/HPC/MolecularDynamics/build/milestones/05/milestone05_exe $num_atoms
+done
+done

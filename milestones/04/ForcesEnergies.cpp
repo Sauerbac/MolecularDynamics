@@ -64,5 +64,5 @@ double total_energy(Atoms &atoms, double sigma, double epsilon) {
     return potential_energy(atoms, sigma, epsilon) + kinetic_energy(atoms);
 }
 double temperature(Atoms &atoms) {
-    return kinetic_energy(atoms) / ((3.0 / 2.0) * BOLTZMANN * atoms.nb_atoms());
+    return kinetic_energy(atoms) / ((3.0 / 2.0) * 1 * atoms.nb_atoms());
 }
