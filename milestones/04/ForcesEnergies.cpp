@@ -31,10 +31,6 @@ void lj_direct_summation(Atoms &atoms, double epsilon, double sigma) {
 double kinetic_energy(Atoms &atoms) {
     double kinetic_energy = 0.0;
     for (int i = 1; i < atoms.nb_atoms(); i++) {
-
-        // std::cout << " " << atoms.velocities.col(i).matrix().norm() << " "
-        //           << atoms.velocities.col(i).matrix() << std::endl;
-        // // std::cout << atoms.velocities << std::endl;
         kinetic_energy += 0.5 *
                           pow(atoms.velocities.col(i).matrix().norm(), 2) *
                           atoms.masses(i);
@@ -63,6 +59,9 @@ double potential_energy(Atoms &atoms, double epsilon, double sigma) {
 double total_energy(Atoms &atoms, double sigma, double epsilon) {
     return potential_energy(atoms, sigma, epsilon) + kinetic_energy(atoms);
 }
-double temperature(Atoms &atoms) {
+double temperature_lj(Atoms &atoms) {
     return kinetic_energy(atoms) / ((3.0 / 2.0) * 1 * atoms.nb_atoms());
+}
+double temperature(Atoms &atoms) {
+    return kinetic_energy(atoms) / ((3.0 / 2.0) * BOLTZMANN * atoms.nb_atoms());
 }
