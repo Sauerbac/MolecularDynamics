@@ -23,10 +23,10 @@ TEST(BerendsenTest, CorrectRescaling) {
         verlet2(system, timestep);
     }
     // test starts here
-    double t_before = temperature(system);
+    double t_before = temperature_lj(system);
     // apply thermostat
-    berendsen_thermostat(system, goal_temp, timestep, tau);
-    double t_after = temperature(system);
+    berendsen_thermostat_lj(system, goal_temp, timestep, tau);
+    double t_after = temperature_lj(system);
     // expected value
     double t_expected =
         goal_temp + (t_before - goal_temp) * exp(-(timestep / tau));
