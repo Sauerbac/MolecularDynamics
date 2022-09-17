@@ -116,7 +116,7 @@ Atoms read_atoms(const std::string &path) {
 Atoms read_atoms_no_velocities(const std::string &path) {
     auto [names, positions] = read_xyz(path);
     if (positions.minCoeff() < 0) {
-        positions += -positions.minCoeff();
+        positions += -positions.minCoeff() + 1;
     }
     Atoms system_from_file = Atoms(positions, names);
     return system_from_file;

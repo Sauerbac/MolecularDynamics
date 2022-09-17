@@ -17,40 +17,42 @@ int main(int argc, char *argv[]) {
     std::cout << "Hello milestone 08!" << std::endl;
     MPI_Init(&argc, &argv);
 
-    std::string path =
-        "/home/sauerbach/HPC/MolecularDynamics/static/cluster_923.xyz";
+    std::string path = "/home/sauerbac/MolecularDynamics/milestones/08/static/"
+                       "cluster_3871.xyz";
     std::string xyz_out =
-        "/home/sauerbach/HPC/MolecularDynamics/static/out_8.xyz";
+        "/home/sauerbac/MolecularDynamics/milestones/08/static/out_8.xyz";
     std::ofstream file(xyz_out);
-    std::string metrics =
-        "/home/sauerbach/HPC/MolecularDynamics/static/metrics_domain.csv";
+    std::string metrics = "/home/sauerbac/MolecularDynamics/milestones/08/"
+                          "static/metrics_122.csv";
     std::ofstream metrics_file(metrics);
 
     Atoms system = read_atoms_no_velocities(path);
-    Domain domain(MPI_COMM_WORLD, {30.0, 30.0, 30.0}, {1, 1, 12}, {0, 0, 0});
-    double cutoff_distance = 10.0;
+    Domain domain(MPI_COMM_WORLD, {50.0, 50.0, 50.0}, {1, 2, 2}, {0, 0, 0});
+    double cutoff_distance = 4.0;
     NeighborList neighbor_list(cutoff_distance);
 
-    double timestep = 10;
+    double timestep = 1;
     double goal_temp = 1000;
-    double relaxation_time = 10000;
+    double relaxation_time = 50000;
 
     int num_steps = relaxation_time / timestep;
+
     domain.enable(system);
     domain.exchange_atoms(system);
     domain.update_ghosts(system, 2 * cutoff_distance);
     for (int i = 0; i < num_steps; i++) {
-
         verlet1(system, timestep);
         domain.exchange_atoms(system);
         domain.update_ghosts(system, 2 * cutoff_distance);
+
+        // std::cout << "Domain " << domain.rank()
+        //           << ", number atoms: " << system.nb_atoms() << std::endl;
 
         double pot = 0.0;
         if (system.nb_atoms() > 0) {
             neighbor_list.update(system);
 
-            Eigen::ArrayXd potential_energies =
-                gupta_parallel(system, neighbor_list);
+            vec potential_energies = gupta_parallel(system, neighbor_list);
             for (int p = 0; p < domain.nb_local(); p++) {
                 pot += potential_energies.coeff(p);
             }
@@ -61,7 +63,7 @@ int main(int argc, char *argv[]) {
         double pot_global;
         MPI_Reduce(&pot, &pot_global, 1, MPI_DOUBLE, MPI_SUM, 0,
                    MPI_COMM_WORLD);
-        if (i % (num_steps / 100) == 0) {
+        if (i % (num_steps / 1000) == 0) {
 
             domain.disable(system);
             if (domain.rank() == 0) {
