@@ -84,11 +84,9 @@ int main(int argc, char *argv[]) {
 
     std::string path = "/home/sauerbac/MolecularDynamics/milestones/09/static/"
                        "whisker_large.xyz";
-    std::string xyz_out = "/home/sauerbac/MolecularDynamics/milestones/09/"
-                          "static/xyz_out_large.xyz";
+    std::string xyz_out = "xyz_out_large.xyz";
     std::ofstream file(xyz_out);
-    std::string metrics = "/home/sauerbac/MolecularDynamics/milestones/09/"
-                          "static/metrics_large.csv";
+    std::string metrics = "/metrics_large.csv";
     std::ofstream metrics_file(metrics);
 
     MPI_Init(&argc, &argv);
