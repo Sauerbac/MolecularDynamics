@@ -35,7 +35,7 @@ double kinetic_energy_parallel(Atoms &atoms, Domain &domain) {
 
 double temperature_parallel(Atoms &atoms, Domain &domain) {
     return kinetic_energy_parallel(atoms, domain) /
-           ((3.0 / 2.0) * BOLTZMANN * atoms.nb_atoms());
+           ((3.0 / 2.0) * BOLTZMANN * domain.nb_local());
 }
 
 double avg_temp(double kin, int nb_atoms) {
@@ -51,8 +51,7 @@ void berendsen_thermostat_parallel(Atoms &atoms, Domain &domain,
     atoms.velocities *= lambda;
 }
 
-double compute_stress(Atoms &atoms, Domain domain, vec pots,
-                      double border_width) {
+double compute_stress(Atoms &atoms, Domain domain, double border_width) {
 
     // borders of current sub domain
     auto border_left =
@@ -61,59 +60,55 @@ double compute_stress(Atoms &atoms, Domain domain, vec pots,
         domain.domain_length()[2] / domain.size() * domain.coordinate()[2] +
         (domain.domain_length()[2] / domain.size());
 
-    // borders plus minus the border_width
-    auto border_left_left = border_left - border_width;
-    auto border_right_right = border_right + border_width;
+    // sum of ghost forces on the left of the subdomain
+    double left_forces = 0.0;
+    for (int i = domain.nb_local(); i < atoms.forces.cols(); i++) {
+        if (atoms.positions(2, i) <= border_left) {
+            left_forces += atoms.forces(2, i);
+        }
+    }
+    // sum of ghost forces on the right of the subdomain
+    double right_forces = 0.0;
+    for (int i = domain.nb_local(); i < atoms.forces.cols(); i++) {
+        if (atoms.positions(2, i) >= border_right) {
+            right_forces += atoms.forces(2, i);
+        }
+    }
 
-    double left_energies = 0.0;
-    for (int i = 0; i < pots.rows(); i++) {
-        if (atoms.positions(2, i) <= border_left &&
-            atoms.positions(2, i) >= border_left_left) {
-            left_energies += pots[i];
-        }
-    }
-    double right_energies = 0.0;
-    for (int i = 0; i < pots.rows(); i++) {
-        if (atoms.positions(2, i) >= border_right &&
-            atoms.positions(2, i) <= border_right_right) {
-            right_energies += pots[i];
-        }
-    }
-    std::cout << domain.rank() << " " << left_energies << " " << right_energies
-              << std::endl;
-    return std::min(left_energies, right_energies);
+    return left_forces;
 }
 
 int main(int argc, char *argv[]) {
 
     std::cout << "Hello milestone 09!" << std::endl;
-    MPI_Init(&argc, &argv);
 
     std::string path = "/home/sauerbac/MolecularDynamics/milestones/09/static/"
-                       "whisker_small.xyz";
-    std::string xyz_out =
-        "/home/sauerbac/MolecularDynamics/milestones/09/static/xyz_out.xyz";
+                       "whisker_large.xyz";
+    std::string xyz_out = "/home/sauerbac/MolecularDynamics/milestones/09/"
+                          "static/xyz_out_large.xyz";
     std::ofstream file(xyz_out);
     std::string metrics = "/home/sauerbac/MolecularDynamics/milestones/09/"
-                          "static/metrics.csv";
+                          "static/metrics_large.csv";
     std::ofstream metrics_file(metrics);
 
+    MPI_Init(&argc, &argv);
     Atoms system = read_atoms_no_velocities(path);
-    Domain domain(MPI_COMM_WORLD, {50.0, 50.0, 144.1}, {1, 1, 6}, {0, 0, 1});
+    Domain domain(MPI_COMM_WORLD, {90.0, 90.0, 288.49956672}, {1, 1, 30},
+                  {0, 0, 1});
     double cutoff_distance = 4.0;
     NeighborList neighbor_list(cutoff_distance);
 
-    double timestep = 1;
+    double timestep = 2;
     double goal_temp = 300;
-    int relax = 100;
+    int relax = 2000;
     int period_steps = relax / timestep;
 
     double strain_zero = domain.domain_length()[2];
-    double strain_add = 1.01;
+    double strain_add = 1.001;
 
     domain.enable(system);
 
-    for (int i = 0; i < period_steps; i++) {
+    for (int i = 0; i < 5 * period_steps; i++) {
         verlet1(system, timestep);
         domain.exchange_atoms(system);
         domain.update_ghosts(system, 2 * cutoff_distance);
@@ -123,13 +118,14 @@ int main(int argc, char *argv[]) {
         berendsen_thermostat_parallel(system, domain, goal_temp, timestep,
                                       relax / 100);
     }
+
     // start simu loop
-    for (int j = 0; j < 100; j++) {
+    for (int j = 0; j < 1000; j++) {
 
         // input energy
         domain.scale(
             system,
-            Eigen::Array3d(50.0, 50.0, domain.domain_length()[2] * strain_add));
+            Eigen::Array3d(90.0, 90.0, domain.domain_length()[2] * strain_add));
 
         // equilibrate
         for (int i = 0; i < period_steps; i++) {
@@ -137,7 +133,7 @@ int main(int argc, char *argv[]) {
             domain.exchange_atoms(system);
             domain.update_ghosts(system, 2 * cutoff_distance);
             neighbor_list.update(system);
-            gupta_parallel(system, neighbor_list);
+            vec pots = gupta_parallel(system, neighbor_list);
             verlet2(system, timestep);
             berendsen_thermostat_parallel(system, domain, goal_temp, timestep,
                                           relax / 100);
@@ -151,9 +147,7 @@ int main(int argc, char *argv[]) {
             verlet1(system, timestep);
             domain.exchange_atoms(system);
             domain.update_ghosts(system, 2 * cutoff_distance);
-
             neighbor_list.update(system);
-
             vec pots = gupta_parallel(system, neighbor_list);
             verlet2(system, timestep);
 
@@ -176,11 +170,12 @@ int main(int argc, char *argv[]) {
 
             // compute the local and gloabl stress
             double stress_global_temp;
-            double stress = compute_stress(system, domain, potential_energies,
-                                           2 * cutoff_distance);
-            MPI_Reduce(&stress, &stress_global_temp, 1, MPI_DOUBLE, MPI_MIN, 0,
-                       MPI_COMM_WORLD);
-            stresses.row(i) = stress_global_temp;
+            double stress = compute_stress(system, domain, 2 * cutoff_distance);
+            // MPI_Reduce(&stress, &stress_global_temp, 1, MPI_DOUBLE, MPI_SUM,
+            // 0,
+            //            MPI_COMM_WORLD);
+            // stresses.row(i) = stress_global_temp / domain.size();
+            stresses.row(i) = stress;
         }
 
         // disable system to write to file
