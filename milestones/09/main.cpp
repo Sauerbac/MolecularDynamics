@@ -91,13 +91,13 @@ int main(int argc, char *argv[]) {
 
     MPI_Init(&argc, &argv);
     Atoms system = read_atoms_no_velocities(path);
-    Domain domain(MPI_COMM_WORLD, {90.0, 90.0, 288.49956672}, {1, 1, 30},
+    Domain domain(MPI_COMM_WORLD, {90.0, 90.0, 288.49956672}, {1, 1, 60},
                   {0, 0, 1});
     double cutoff_distance = 4.0;
     NeighborList neighbor_list(cutoff_distance);
 
     double timestep = 2;
-    double goal_temp = 300;
+    double goal_temp = 100;
     int relax = 2000;
     int period_steps = relax / timestep;
 
